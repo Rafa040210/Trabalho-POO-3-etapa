@@ -46,7 +46,7 @@ class Professor(Base):
     nome = Column(String)
     formacao = Column(String)
 
-    relationship('Turma', secondary='siapes', back_populates='Professores')
+    turmas = relationship('Turma', secondary='siapes', back_populates='Professores')
 
     def __repr__(self):
         return f"Professor({self.siape}, {self.nome})"
@@ -92,20 +92,20 @@ Administracao_3A = Turma(nome='Administração 3A', tipo='Administração')
 #Inserindo dados na tabela aluno
 #vou inserir um por um
 
-al1 = Aluno(matricula=12345, nome='Luara Santos', sexo='Feminino', curso='Administração',  turma_objeto=Administracao_2A)
+al1 = Aluno(matricula=12345, nome='Luara Santos', sexo='Feminino', curso='Administração', turma_objeto=Administracao_2A)
 
-al2 = Aluno(matricula=10356, nome='Mariana Merike', sexo='Feminino', curso='Administração',  turma_objeto=Administracao_2A)
+al2 = Aluno(matricula=10356, nome='Mariana Merike', sexo='Feminino', curso='Administração', turma_objeto=Administracao_2A)
 
-al3 = Aluno(matricula=19340, nome='Raika Sousa', sexo='Feminino', curso='Administração',  turma_objeto=Administracao_3A)
+al3 = Aluno(matricula=19340, nome='Raika Sousa', sexo='Feminino', curso='Administração', turma_objeto=Administracao_3A)
 
 
-al4 = Aluno(matricula=17395, nome='Katarina Souares', sexo='Feminino', curso='Administração',  turma_objeto=Administracao_1A)
+al4 = Aluno(matricula=17395, nome='Katarina Souares', sexo='Feminino', curso='Administração', turma_objeto=Administracao_1A)
 
 al5 = Aluno(matricula=18845, nome='Katarina Oliveira', sexo='Feminino', curso='Informática', turma_objeto=Infomatica_1A)
 
 al6 = Aluno(matricula=12399, nome='Deigo Dias Oliveira', sexo='Masculino', curso='Informática', turma_objeto=Infomatica_3A)
 
-al7 = Aluno(matricula=10045, nome='Luiz Martiz', sexo='Masculino', data_nas='2008-09-20', curso='Informática',  turma_objeto=Infomatica_3A)
+al7 = Aluno(matricula=10045, nome='Luiz Martiz', sexo='Masculino', curso='Informática',  turma_objeto=Infomatica_3A)
 
 al8 = Aluno(matricula=18945, nome='Luiz Sousa', sexo='Masculino', curso='Informática', turma_objeto=Infomatica_1A)
 
