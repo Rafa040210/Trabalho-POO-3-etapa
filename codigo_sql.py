@@ -87,23 +87,23 @@ session = Session()
 
 #Inserindo dados na tabela turma
 
-Infomatica_1A = Turma(nome='Informática 1A', tipo='Informática')
+Infomatica_1A = Turma(id=1, nome='Informática 1A', tipo='Informática')
 
-Infomatica_2A = Turma(nome='Informática 2A', tipo='Informática')
-
-
-Infomatica_3A = Turma(nome='Informática 3A', tipo='Informática')
+Infomatica_2A = Turma(id=2, nome='Informática 2A', tipo='Informática')
 
 
-Eletro_1 = Turma(nome='Eletro 1', tipo='Eletro')
-Eletro_2 = Turma(nome='Eletro 2', tipo='Eletro')
-Eletro_3 = Turma(nome='Eletro 3', tipo='Eletro')
+Infomatica_3A = Turma(id=3, nome='Informática 3A', tipo='Informática')
 
-Administracao_1A = Turma(nome='Administração 1A', tipo='Administração')
 
-Administracao_2A = Turma(nome='Administração 2A', tipo='Administração')
+Eletro_1 = Turma(id=4, nome='Eletro 1', tipo='Eletro')
+Eletro_2 = Turma(id=5, nome='Eletro 2', tipo='Eletro')
+Eletro_3 = Turma(id=6, nome='Eletro 3', tipo='Eletro')
 
-Administracao_3A = Turma(nome='Administração 3A', tipo='Administração')
+Administracao_1A = Turma(id=7, nome='Administração 1A', tipo='Administração')
+
+Administracao_2A = Turma(id=8, nome='Administração 2A', tipo='Administração')
+
+Administracao_3A = Turma(id=9, nome='Administração 3A', tipo='Administração')
 
 #Inserindo dados na tabela aluno
 #vou inserir um por um
@@ -249,7 +249,37 @@ todas_as_listas = [
 for lista_aluno in todas_as_listas:
     for nota in lista_aluno:
         session.add(nota)
-        
+
 session.commit()
 
 
+#Consultas
+ #Fácil
+print("\n--- 1)Nome dos alunos e suas salas---")
+q1 = session.query(Aluno, Turma).join(Turma).all()
+for aluno, turma in q1:
+    print(f"Aluno: {aluno.nome} | Sala/Turma: {turma.nome}")
+
+
+#Médio
+
+print("\n--- 2) Alunos aprovados se sua nota for >= 5 ---")
+q2 = session.query(Aluno, Boletim).join(Boletim).filter(Boletim.nota >= 5.0).all()
+for aluno, boletim in q2:
+    print(f"Aluno: {aluno.nome} | Disciplina: {boletim.disciplina} | Nota: {boletim.nota}")
+
+#Intermédiario
+print("\n--- 3) Professore e sua formação e suas turmas---")
+q3 = session.query(Professor, Turma).\
+    join(siapes, Professor.siape == siapes.c.professor_siape).\
+    join(Turma, Turma.id == siapes.c.turma_id).all() #chave estrangeira
+for professor, turma in q3:
+    print(f"Prof(a): {professor.nome} | Formação: {professor.formacao} | Turma: {turma.nome}")
+
+#"Avançado"
+print("\n--- 4) Média geral das notas de cada aluno ---")
+q4 = session.query(Aluno.nome, func.avg(Boletim.nota).label('media')).\
+    join(Boletim, Aluno.matricula == Boletim.aluno_matricula).\
+    group_by(Aluno.nome).all()
+for nome_aluno, media in q4:
+    print(f"Aluno: {nome_aluno} | Média Geral: {round(media, 2)}")
