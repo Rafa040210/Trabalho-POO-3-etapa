@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Table, Float
 from sqlalchemy import select, update, delete, insert, func, asc, desc
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 engine = create_engine('sqlite:///escola.db')
 
-## Código inspirado no trabalho anterior só que sem a implementação do boletim(não sabia como fazer :( !)
 
 ### criando as tabelas
 Base = declarative_base()
@@ -38,6 +37,23 @@ class Aluno(Base):
 
     def __repr__(self):
         return f"Aluno({self.matricula}, {self.nome}, {self.curso})"
+
+
+    # Atalho: Não cria coluna no banco, mas posso fazer `aluno.boletins` 
+
+    boletins = relationship('Boletim', back_populates='aluno')
+
+
+        
+class Boletim(Base):
+    __tablename__ = 'boletim'
+    id = Column(Integer, primary_key=True) 
+    disciplina = Column(String(50))        
+    nota = Column(Float)   
+
+    aluno_matricula = Column(Integer, ForeignKey('aluno.matricula'))
+
+    aluno = relationship('Aluno', back_populates='boletins')
 
 
 class Professor(Base):
@@ -145,24 +161,95 @@ session.add_all([Ana, Diego, Luiza, Felipe, Renata, Solange, al1, al2, al3, al4,
 
 session.execute(siapes.insert(), [
     {"professor_siape": 1234, "turma_id": 1},
-    {"professor_siape": 1234, "turma_id": 4},
+    {"professor_siape": 1234, "turma_id": 4}, #okk
     {"professor_siape": 1345, "turma_id": 1},
     {"professor_siape": 1345, "turma_id": 8},
-    {"professor_siape": 1345, "turma_id": 9},
+    {"professor_siape": 1345, "turma_id": 9}, #okk
     {"professor_siape": 3444, "turma_id": 1},
     {"professor_siape": 3444, "turma_id": 2},
-    {"professor_siape": 3444, "turma_id": 3},
+    {"professor_siape": 3444, "turma_id": 3}, #okk
     {"professor_siape": 5432, "turma_id": 5},
     {"professor_siape": 5432, "turma_id": 6},
-    {"professor_siape": 5432, "turma_id": 4},
+    {"professor_siape": 5432, "turma_id": 4}, #okk
     {"professor_siape": 1321, "turma_id": 7},
     {"professor_siape": 1321, "turma_id": 8},
-    {"professor_siape": 1321, "turma_id": 9},
+    {"professor_siape": 1321, "turma_id": 9}, #okk
     {"professor_siape": 7654, "turma_id": 6},
     {"professor_siape": 7654, "turma_id": 7},
     {"professor_siape": 7654, "turma_id": 5}
 ] )   
 
+
+Notas_Luara_Santos = [
+    Boletim(aluno_matricula=12345, disciplina='Química', nota=7.0), #okk
+    Boletim(aluno_matricula=12345, disciplina='Empreendedorismo', nota=2.5), #okk
+]
+
+Notas_Mariana = [
+      Boletim(aluno_matricula=10356, disciplina='Química', nota=7.9), #okk
+      Boletim(aluno_matricula=10356, disciplina='Empreendedorismo', nota=4.5), #okk
+]
+
+Notas_Raika = [
+      Boletim(aluno_matricula=19340, disciplina='Química', nota=3.4), #okk
+      Boletim(aluno_matricula=19340, disciplina='Empreendedorismo', nota=10.0), #okk
+]
+
+Notas_Katarina = [
+      Boletim(aluno_matricula=17395, disciplina='Biologia', nota=9.5), #okk
+      Boletim(aluno_matricula=17395, disciplina='Artes', nota=8.0), #okk
+      Boletim(aluno_matricula=17395, disciplina='Empreendedorismo', nota=9.0), #Ok
+]
+
+Notas_Katarina_Oliveira = Boletim(aluno_matricula=18845, disciplina='Banco de Dados', nota=7.5), #ok
+
+
+Notas_Deigo = Boletim(aluno_matricula=12399, disciplina='Banco de Dados', nota=5.5), #ok
+
+
+Notas_Luiz_Martiz = Boletim(aluno_matricula=10045, disciplina='Banco de Dados', nota=1.4), #ok
+
+Notas_Luiz_Sousa = [
+      Boletim(aluno_matricula=18945, disciplina='Biologia', nota=7.0), #Okk
+      Boletim(aluno_matricula=18945, disciplina='Banco de Dados', nota=8.0), #ok
+]
+
+Notas_Lucas = Boletim(aluno_matricula=12234, disciplina='Banco de Dados', nota=10.0), #ok
+
+
+Notas_Lucas_Oliveira = [
+      Boletim(aluno_matricula=12900, disciplina='Biologia', nota=2.7), #okk
+      Boletim(aluno_matricula=12900, disciplina='Máquinas Elétricas', nota=1.6), #ok
+]
+    
+
+Notas_Matheus = [
+      Boletim(aluno_matricula=15345, disciplina='Biologia', nota=6.5), #okk
+      Boletim(aluno_matricula=15345, disciplina='Máquinas Elétricas', nota=6.0), #okk
+]
+
+Notas_Matheus_Gonçalves = [
+      Boletim(aluno_matricula=12205, disciplina='Artes', nota=7.8), #okk
+      Boletim(aluno_matricula=12205, disciplina='Máquinas Elétricas', nota=5.7), #okk
+]
+
+Notas_Juan = [
+      Boletim(aluno_matricula=13340, disciplina='Artes', nota=5.0), #okk
+      Boletim(aluno_matricula=12205, disciplina='Máquinas Elétricas', nota=5.9), #okk
+]
+
+# Dá erro se fizer asim session.add_all([Notas_Luara_Santos, Notas_Mariana, Notas_Deigo, Notas_Juan, Notas_Katarina, Notas_Katarina_Oliveira, Notas_Lucas, Notas_Lucas_Oliveira, Notas_Luiz_Martiz, Notas_Matheus, Notas_Matheus_Gonçalves, Notas_Luiz_Sousa, Notas_Raika])
+#Vou fazer assim:
+todas_as_listas = [
+    Notas_Luara_Santos, Notas_Mariana, Notas_Deigo, Notas_Juan, 
+    Notas_Katarina, Notas_Katarina_Oliveira, Notas_Lucas, Notas_Lucas_Oliveira, 
+    Notas_Luiz_Martiz, Notas_Matheus, Notas_Matheus_Gonçalves, Notas_Luiz_Sousa, Notas_Raika
+]
+
+for lista_aluno in todas_as_listas:
+    for nota in lista_aluno:
+        session.add(nota)
+        
 session.commit()
 
 
